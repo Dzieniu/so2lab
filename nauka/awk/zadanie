@@ -1,0 +1,12 @@
+#!/bin/bash
+
+ps aux | awk 'BEGIN {cpu=0;ram=0}
+{
+	if(NR>1)
+	{
+		cpu=cpu+$3
+		ram=ram+$4
+	}
+} 
+END {print cpu " " ram}
+'

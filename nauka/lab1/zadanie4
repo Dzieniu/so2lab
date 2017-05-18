@@ -1,0 +1,15 @@
+#!/bin/bash
+
+nr=0
+
+for file in `ls -S $1`
+do
+
+	if [ -x "$1/$file" ]
+	then
+
+		mv "$1/$file" "$1/$file.$nr"
+		((nr++))
+	fi
+
+done

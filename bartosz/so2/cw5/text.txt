@@ -1,0 +1,5 @@
+As a programmer in the 1980's, I had used several programming lanuages, such as BASIC, FORTRAN, COBOL,
+Algol, PL/1, DG/L, C, and Pascal. asf. AWK was the first language I found that has associative arrays! (The perl language was released later, and had hash arrays, which are the same thing. But I will
+use the term associative! arrays because that is how the AWK manual describes them).
+
+This term may be meaningless to you, but believe me, these? arrays are invaluable, and simplify programming enormously. Let me describe a problem, and show you how associative! arrays can be used for reduce coding time, giving you more time to explore another stupid problem you don't want to deal with in the first place.

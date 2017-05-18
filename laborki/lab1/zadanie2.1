@@ -1,0 +1,66 @@
+#!/bin/bash
+#<Konrad><<Dzień>
+#Zadanie 04 :
+#Numerowanie wszystkich plików w zadanym katalogu (parametr wywołania skryptu), do których
+#mamy ustawione prawo wykonywania ("execute"), przez dodanie dodatkowego członu rozszerzenia
+#o postaci .numerkolejny. Numeracja powinna przebiegać wedługo wielkości plików
+#a)skontroluj czy podano poprawną liczbę argumentów do skryptu
+#b) upewnij sie ze katalog roboczy istnieje i mozemy zmieniac w nim nazwy plikow
+#c) nie zmieniaj nazw plikow wykonywalnych ktorych nazwa zaweira czlon .special
+#d) jesli w katalogu roboczym znajduje sie jakis podkatalog dokonaj rowniez zmian nazw
+
+liczbaarg=1
+licznik=0
+
+#podpunkt a)
+if [ "$#" != "$liczbaarg" ]
+	then
+	echo "zla liczba parametrow"
+	exit 1
+fi
+
+#podupunkt b)
+if [ -d $1 ]
+	then
+	echo "folder istnieje i mozna zmieniac w nim nazwy plikow"
+else
+	echo "cos nie tak z folderem"
+	exit 1
+fi
+
+for file in $(ls -S $1)
+do	
+#podpunkt d
+	if [-d "${file}"]
+	then
+		for file2 in $(ls -S $1/$file/)
+		do
+			if [ -e "$file2" ]
+			then
+				#podpunkt c
+				if [ ${file2: -8} == ".special" ]
+				then
+					echo "$file2 jest specjalny"
+				else
+					mv "$file2" "$file2.$licznik"
+					((licznik++))
+				fi
+			fi
+		done
+	else
+	
+	
+		if [ -e "$file" ]
+		then
+			#podpunkt c
+			if [ ${file: -8} == ".special" ]
+			then
+				echo "$file jest specjalny"
+			else
+				mv "$file" "$file.$licznik"
+				((licznik++))
+			fi
+		fi
+	fi
+
+done

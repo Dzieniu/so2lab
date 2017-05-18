@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for plik in `ls $1`
+do
+
+	if [ "$1/$plik" ] && [ "$2/$plik" ]
+	then
+		echo "$plik jest tu i tu"
+	fi	
+done

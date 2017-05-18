@@ -1,0 +1,32 @@
+#!/usr/bin/perl -w
+
+# W zadanym dzrzewie katalogów znaleźć dowiązania
+# symboliczne wskazujące na pliki regularne w których nazwy
+# zaczynają się i kończą tym samym znakiem
+
+use Cwd 'abs_path';
+use File::Find;
+use File::Basename;
+
+
+next unless @ARGV == '1';
+$dir = abs_path($ARGV[0]);
+
+find(\&my_func, $dir);
+
+sub my_func
+{
+    my $file = "$File::Find::name";
+    return unless -l $file;
+    $target = abs_path(readlink("$file"));
+    my($f, $d, $e) = fileparse($target);
+    $fname = $f.$e;
+
+    $lastChr = substr($fname, -1);
+    $firstChr = substr($fname, 0, 1);
+
+    if ($firstChr eq $lastChr) {
+      print "$fname \n";
+    }
+
+}

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+awk 'BEGIN {FS=",";} 
+	{	
+		if(NR>1){
+			if(NF<3){
+				print "Linia " NR " nie ma wszystkich argumentów: " $0
+			}
+		}
+	}
+	' csv

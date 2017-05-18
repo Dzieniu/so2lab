@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#Numerowanie wszystkich plików w zadanym katalogu, do których mamy 
+#ustawione prawo wykonywania, przez dodanie dodatkowego członu rozszerzenia o postaci .<numer> 
+#numeracja powinna przebiegac wedlug wielkosci plikow
+
+i=1
+
+
+for file in `ls $1 -S`
+
+do
+	mv "$1/$file" "$1/$file.$i"
+	i=$((i+1))
+done

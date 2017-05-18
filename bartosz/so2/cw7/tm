@@ -1,0 +1,25 @@
+#!/usr/bin/perl -w
+
+#w zadanym katalogu zmalezc dowiazania symboliczne do plikow regularnych do ktorych wykonawca skryptu ma prawo zapisu
+#i przerobic aby dowiazanie bylo zdefiniowane sciezka ./nazwa_pliku
+
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dir = abs_path(@ARGV);
+opendir(DIR, $dir) or die $!;
+print "$dir/n";
+while (my $link = readdir(DIR)) {
+    next unless (-l "$dir/$link");
+    my $target = abs_path(readlink("$dir/$link"));
+    if($target =~ m/$dir\//)
+    {
+      my $basename = basename($target);
+      print " $basename";
+      unlink("$dir/$link");
+      symlink("./$basename", "$dir/$link");
+    }
+}
+
+closedir(DIR);
+exit 0;

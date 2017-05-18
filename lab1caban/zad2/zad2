@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#Tworzenie  nowych  plików  w  zadanym  katalogu  (parametr  wywołania skryptu), według listy 
+#umieszczonej  w  pliku  (drugi  parametr  wywołania  skryptu).  Nowe  pliki  mają być zerowej  
+#wielkości (puste). Jeżeli jakiś plik już istnieje, to nie powinien zostać zniszczony. 
+
+
+
+for linia in $(cat $2)
+do
+	if [ -a "$1/$linia" ] 
+	then
+		echo "plik $linia juz istnieje"	
+	else
+		touch "$1/$linia"
+	fi	
+done

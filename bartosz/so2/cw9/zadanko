@@ -1,0 +1,25 @@
+#!/usr/bin/perl -w
+
+# W zadanym drzewie katalogow znalezc pliki regularne
+# w ktorych w nazwie bez rozszerzen zawarte jest ostatnie
+# rozszerzenie
+
+use Cwd 'abs_path';
+use File::Find;
+
+
+next unless @ARGV == '1';
+$dir = abs_path($ARGV[0]);
+
+find(\&my_func, $dir);
+
+sub my_func
+{
+    $fname = $_;
+
+    if ($fname =~ s/\.(\w*$)//){
+      if ($fname =~ m/$1/){
+        print "$_"
+      }
+    }
+}

@@ -1,0 +1,21 @@
+#Konrad Dzień
+#Wyrażenia regularne
+
+L1: abc
+L1.2: 123 lub \d
+L2: \.
+L3: [cmf]
+L4: [hd] lub [^bog]
+L5: [A-C] lub ABC
+L6: z{2,5}
+L7: c+ lub c
+L8: \? lub \d lub '\d files? found\?'
+L9: \s+
+L10: ^Mission: successful$
+L11: ^(file.+)\.pdf$
+L12: ^(\w{1,3} (.+))$
+L13: (\d+)x(\d+)
+L14: I love (cats|dogs)
+L15: .* 
+
+Excercise 4: <(a|div)>?

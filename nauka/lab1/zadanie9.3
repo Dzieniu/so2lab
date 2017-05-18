@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#kasowanie plikow zerowych
+
+for plik in `ls $1`
+do
+
+	if [ -s "$1/$plik" ]
+	then
+		echo "plik $plik jest niezerowy wiec nie kasujemy "	
+	else
+		rm "$1/$plik"
+		echo "$plik" >> skasowanepliki
+	fi	
+done

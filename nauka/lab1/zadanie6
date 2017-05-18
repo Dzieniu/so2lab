@@ -1,0 +1,12 @@
+#!/bin/bash
+
+for nazwapliku in `cat $1/$2`
+do
+	echo "-------$nazwapliku--------" >> lista
+	for linia in `cat $1/$nazwapliku`
+	do
+		echo "$linia" >> "$2"
+	done
+
+
+done

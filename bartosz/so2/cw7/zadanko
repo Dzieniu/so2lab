@@ -1,0 +1,31 @@
+#!/usr/bin/perl -w
+
+# dzialajac na jednym katalogu, w zadanym katalogu, znalezc dowiazania symboliczne
+# wskazujace na pliki regularne do ktorych wylasciciel nie ma prawa zapisu
+
+use Cwd 'abs_path';
+use Fcntl ':mode';
+next unless @ARGV == '1';
+
+$dir = abs_path($ARGV[0]);
+
+opendir(DIR, $dir);
+while ($link = readdir(DIR)) {
+  next unless (-l "$dir/$link");
+
+  $target = abs_path(readlink("$dir/$link"));
+
+  next unless (-f "$target");
+
+  $perm = ((stat $target)[2] & S_IRWXU) >> 6;
+  print $perm;
+
+  next unless $perm == '5';
+
+  print "$target";
+
+}
+
+
+
+closedir(DIR);

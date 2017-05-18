@@ -1,0 +1,1 @@
+W zadanym drzewie katalogów znaleźć 5 najczęściej występujących nazw plików regularnych

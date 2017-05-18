@@ -1,0 +1,12 @@
+#!/bin/bash
+
+awk 'BEGIN {FS=":"; i=0} 
+	{
+		if($1=="root" )
+		
+		{ $1="dupa" 
+		print $0 
+		}
+
+	}
+	END {}' /etc/passwd

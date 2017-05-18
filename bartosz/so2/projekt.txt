@@ -1,0 +1,4 @@
+1. Program c/c++
+2. Wielowątkowość (ma mieć sens)
+3. Biblioteka pthreads
+4. Biblioteka ncurses

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#Zmiana nazw wszystkich plików w zadanym katalogu (parametr wywołania skryptu) 
+#do których mamy ustawione prawo zapisu, przez dopisanie dodatkowego członu .old. 
+#Wcześniej należy skasować wszystkie pliki, które już mają takie rozszeżenie
+
+if [ -a $1 ]
+then
+	if [ -d $1 ]
+	then
+	echo "plik istnieje i jest katalogiem"
+	else
+	echo "plik istnieje, lecz nie jest katalogiem. prosze podac katalog"
+	exit 1
+	fi
+else
+	echo " plik nie istnieje, prosze podac poprawne dane"
+	exit 1
+fi
+
+for plik in `ls $1` 
+do
+	if [[ $plik == *.old ]] 
+	then
+		rm "$1/$plik"
+	else 
+		if [ -w $plik ]
+		then
+			mv "$1/$plik" "$1/$plik.old"
+		fi
+	fi
+done

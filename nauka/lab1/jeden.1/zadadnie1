@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#zmiana nazw wszystkich plików dodajac .old, wczesniej skasowac wszystkie takie pliki
+
+for plik in `ls $1`
+do
+	if [ $plik == *.old ]
+	then
+		rm "$1/$plik"
+	fi		
+done
+
+for plik in `ls $1`
+do
+	if [ -w $plik ]
+	then
+		mv "$1/$plik" "$1/$plik.old"
+	fi		
+done

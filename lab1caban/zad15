@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#policzyc pliki ktore mozna wykonac (-x), w zadanym katalogu
+
+countFiles=0
+
+for file in `ls $1`
+do
+	if [ -x $file ]
+	then
+		countFiles=$((countFiles+1))
+	fi 
+done
+
+echo "$countFiles"

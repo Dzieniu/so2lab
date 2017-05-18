@@ -1,0 +1,1 @@
+Dla zadanych 2 katalogow znalezc dowiazania symboliczne w pierwszym kat. wskazuje na plik regularny w drugim

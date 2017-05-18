@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#tworzenie plikow z listy w pliku
+
+for plik in `cat $1`
+do
+	if [ -e "$2/$plik" ]; then
+		echo ""
+	else
+		touch "$2/$plik"
+	fi
+
+done
