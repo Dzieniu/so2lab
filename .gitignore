@@ -1,3 +1,4 @@
+.gitignore
 projekt/makefile
 projekt/proj
 projekt/proj.c
