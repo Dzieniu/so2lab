@@ -17,7 +17,7 @@ struct pionek {
 #define winx 50
 #define winy 20
 #define ilosc 5
-#define iloscPlap 30
+#define iloscPlap 160
 
 struct pionek pionki[ilosc];
 struct pole plansza[winx][winy];
@@ -127,7 +127,7 @@ void* ruch(void* arg){
 
 		while(ilosc > zablokowane)
 		{
-			usleep(100*1000);
+			usleep(100*1000); // odswiezanie obrazu, czas ruchu pionkow
 			int x = p->x;
 			int y = p->y;
 			int kierunek = rand()%4; // 0-gora 1-prawo 2-dol 3-lewo
@@ -300,14 +300,14 @@ void* ruch(void* arg){
 				pthread_mutex_unlock(&mutex);
 			}
 		}
-		usleep(500*100);
+		// usleep(500*100);
 		koniec = true;
 		return NULL;
 }
 
 int main(void) {
 	initscr();
-	curs_set(0);
+	curs_set(0); //ustawia kursor na niewidok
 	srand(time(NULL));
 	int i,row, col;
 	char tekst[] = "Wszystkie pionki zostaly zablokowane";
