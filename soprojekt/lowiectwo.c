@@ -11,8 +11,8 @@
 //wymiary pola rysowalnego
 #define windowX 60
 #define windowY 20
-#define pulapki 100
-#define iloscPionkow 5
+#define pulapki 20
+#define iloscPionkow 15
 
 
 struct pole{
@@ -26,6 +26,8 @@ struct pionek{
 
 struct pole plansza[windowX][windowY];
 struct pionek pionki[iloscPionkow];
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 //watki
 pthread_t rysowanieWatek;
@@ -119,7 +121,7 @@ void* rysuj(void* arg){
 void* ruchPionka(void* arg){
 	struct pionek* p = (struct pionek*)arg; //przekazany argument z watku,czyli pojedynczy pionek
 	while(true){
-		usleep(1000000);//czas ruchu pionka
+		usleep(100*1000);//czas ruchu pionka
 		int kierunek = rand()%4; // kierunek ruchu, 0-gora, 1-prawo, 2-dol, 3-lewo
 		//koordynaty pionka przed ruchem
 
@@ -128,6 +130,7 @@ void* ruchPionka(void* arg){
 
 
 		//ruch pionka
+		pthread_mutex_lock(&mutex);
 		if(kierunek==0){
 			if (p->zablokowany!=true)//jak wolny to go, jak zablokowany to nothing happens
 			{
@@ -138,7 +141,7 @@ void* ruchPionka(void* arg){
 					//nowe koordynaty pionka
 					p->x = x;								
 		  		p->y = y-1;
-				}else{//if nie pulapka
+				}else if(plansza[x][y-1].status == 0){//if nie pulapka
 					plansza[x][y-1].status = 1; // nowy status pola planszy - pionek
 			  	plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
 			  	p->x = x;								
@@ -155,7 +158,7 @@ void* ruchPionka(void* arg){
 					//nowe koordynaty pionka
 					p->x = x+1;								
 		  		p->y = y;
-				}else{//if nie pulapka
+				}else if(plansza[x+1][y].status == 0){//if nie pulapka
 					plansza[x+1][y].status = 1; // nowy status pola planszy - pionek
 	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
 			  	p->x = x+1;								
@@ -173,7 +176,7 @@ void* ruchPionka(void* arg){
 					//nowe koordynaty pionka
 					p->x = x;								
 		  		p->y = y+1;
-				}else{//if nie pulapka
+				}else if(plansza[x][y+1].status == 0){//if nie pulapka
 					plansza[x][y+1].status = 1; // nowy status pola planszy - pionek
 	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
 			  	p->x = x;								
@@ -191,7 +194,7 @@ void* ruchPionka(void* arg){
 					//nowe koordynaty pionka
 					p->x = x-1;								
 		  		p->y = y;
-				}else{//if nie pulapka
+				}else if(plansza[x-1][y].status == 0){//if nie pulapka
 					plansza[x-1][y].status = 1; // nowy status pola planszy - pionek
 	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
 			  	p->x = x-1;								
@@ -199,8 +202,8 @@ void* ruchPionka(void* arg){
 				}
 			}
 		}
+		pthread_mutex_unlock(&mutex);
 	}
-
 }
 
 
