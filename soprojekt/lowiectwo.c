@@ -23,6 +23,10 @@ struct pionek{
 struct pole plansza[windowX][windowY];
 struct pionek pionki[iloscPionkow];
 
+//watki
+pthread_t rysowanieWatek;
+pthread_t pionkiWatki[iloscPionkow];
+
 // void inicjujplansze(){
 // 	for(int i=0;i<windowY;i++){
 // 		for(int j=0;j<windowX;j++){
@@ -58,7 +62,7 @@ void umiescPionki(){
 
 
 
-void rysuj(){
+void tworzobraz(){
 	start_color();
 	init_pair(1, COLOR_BLACK, COLOR_WHITE); // kolor planszy
 	init_pair(2, COLOR_RED, COLOR_RED); // kolor pulapki
@@ -93,17 +97,36 @@ void rysuj(){
 	refresh();
 };
 
+bool koniec=false;
+
+void* rysuj(void* arg){
+	while(!koniec){
+		tworzobraz();
+	}
+};
+
+void* ruchPionka(void* arg){
+	
+}
+
 
 int main(void){
-srand(time(NULL)); // jakis zarodek bez tego przy kolejnym uruchomieniu programu sa te same liczby, co za patologia
+	srand(time(NULL)); // jakis zarodek bez tego przy kolejnym uruchomieniu programu sa te same liczby, co za patologia
 	initscr(); //ncurses - startuje tryb rysowania
+
 	losujpulapki();
 	umiescPionki();
-	rysuj();
+	//--------------------------watki tworzenie--------------
+	pthread_create(&rysowanieWatek,NULL, rysuj, NULL); // 1. id watku, 2. atrybuty, szczegoly watku, 3. funkcja wykonywana w watku, 4. argumenty przekazywane do funkcji
+	for(int i=0; i<iloscPionkow;i++){
+		pthread_create(&pionkiWatki[i],NULL,ruchPionka,&pionki[i]);
+	}
+	//------------------koniec tworzenia watkow
+	tworzobraz();
 
 
 	refresh();
-	sleep(51);
+	sleep(51);//czeka tyle sekund na zakonczenie ncurses
 	endwin(); //ncurses- konczy tryb rysowania
 
 }
