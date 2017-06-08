@@ -9,10 +9,10 @@
 
 
 //wymiary pola rysowalnego
-#define windowX 60
+#define windowX 100
 #define windowY 20
-#define pulapki 20
-#define iloscPionkow 15
+#define pulapki 40
+#define iloscPionkow 10
 
 
 struct pole{
@@ -79,27 +79,27 @@ void tworzobraz(){
 		for(j=0;j<windowX;j++){ //wszystko ncurses
 			if(plansza[j][i].status==2){
 				attrset(COLOR_PAIR(2));
-				a='x';
+				a=' ';
 				move(i+1, j+1); //kursor przesuwa
 				addch(a);
 				attroff(COLOR_PAIR(2));
 
 			}else if(plansza[j][i].status==0) {
 				attrset(COLOR_PAIR(1));
-				a='s';
+				a=' ';
 				move(i+1, j+1); //kursor przesuwa
 				addch(a);
 				attroff(COLOR_PAIR(1));
 			}else if(plansza[j][i].status==1) {
 				attrset(COLOR_PAIR(3));
-				a='s';
+				a=' ';
 				move(i+1, j+1); //kursor przesuwa
 				addch(a);
 				attroff(COLOR_PAIR(3));
 			}
 			else if(plansza[j][i].status==3) {
 				attrset(COLOR_PAIR(4));
-				a='s';
+				a=' ';
 				move(i+1, j+1); //kursor przesuwa
 				addch(a);
 				attroff(COLOR_PAIR(4));
@@ -112,15 +112,17 @@ void tworzobraz(){
 
 // bool koniec=false;
 
+bool koniec=false;
 void* rysuj(void* arg){
-	while(true){
+	while(!koniec){
 		tworzobraz();
 	}
 };
 
+int zablokowane;
 void* ruchPionka(void* arg){
 	struct pionek* p = (struct pionek*)arg; //przekazany argument z watku,czyli pojedynczy pionek
-	while(true){
+	while(zablokowane<iloscPionkow){
 		usleep(100*1000);//czas ruchu pionka
 		int kierunek = rand()%4; // kierunek ruchu, 0-gora, 1-prawo, 2-dol, 3-lewo
 		//koordynaty pionka przed ruchem
@@ -136,11 +138,13 @@ void* ruchPionka(void* arg){
 			{
 				if(plansza[x][y-1].status == 2){ //if pulapka
 					p->zablokowany=true;
+
 					plansza[x][y-1].status = 3; // nowy status pola planszy - zablkoowany pionek
 					plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
 					//nowe koordynaty pionka
 					p->x = x;								
 		  		p->y = y-1;
+		  		zablokowane++;
 				}else if(plansza[x][y-1].status == 0){//if nie pulapka
 					plansza[x][y-1].status = 1; // nowy status pola planszy - pionek
 			  	plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
@@ -158,6 +162,7 @@ void* ruchPionka(void* arg){
 					//nowe koordynaty pionka
 					p->x = x+1;								
 		  		p->y = y;
+		  		zablokowane++;
 				}else if(plansza[x+1][y].status == 0){//if nie pulapka
 					plansza[x+1][y].status = 1; // nowy status pola planszy - pionek
 	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
@@ -176,6 +181,7 @@ void* ruchPionka(void* arg){
 					//nowe koordynaty pionka
 					p->x = x;								
 		  		p->y = y+1;
+		  		zablokowane++;
 				}else if(plansza[x][y+1].status == 0){//if nie pulapka
 					plansza[x][y+1].status = 1; // nowy status pola planszy - pionek
 	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
@@ -194,6 +200,7 @@ void* ruchPionka(void* arg){
 					//nowe koordynaty pionka
 					p->x = x-1;								
 		  		p->y = y;
+		  		zablokowane++;
 				}else if(plansza[x-1][y].status == 0){//if nie pulapka
 					plansza[x-1][y].status = 1; // nowy status pola planszy - pionek
 	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
@@ -204,26 +211,39 @@ void* ruchPionka(void* arg){
 		}
 		pthread_mutex_unlock(&mutex);
 	}
+	sleep(1);//to przez to, ze nie bylo widac jak ostatni pionek wchodzi na pulapke
+	koniec=true;
 }
 
 
 int main(void){
 	srand(time(NULL)); // jakis zarodek bez tego przy kolejnym uruchomieniu programu sa te same liczby, co za patologia
 	initscr(); //ncurses - startuje tryb rysowania
-
+curs_set(0);//chowakursor
 	losujpulapki();
 	umiescPionki();
+	tworzobraz();
 	//--------------------------watki tworzenie--------------
 	pthread_create(&rysowanieWatek,NULL, rysuj, NULL); // 1. id watku, 2. atrybuty, szczegoly watku, 3. funkcja wykonywana w watku, 4. argumenty przekazywane do funkcji
 	for(int i=0; i<iloscPionkow;i++){
 		pthread_create(&pionkiWatki[i],NULL,ruchPionka,&pionki[i]);
 	}
 	//------------------koniec tworzenia watkow
-	tworzobraz();
+
+	pthread_join(rysowanieWatek, NULL);
+	for (int i=0; i < iloscPionkow; i++)
+	{
+        pthread_join(pionkiWatki[i], NULL);
+	}
+
+	char tekst[] = "Wszystkie pionki zostaly zablokowane";
+	int row,col;
+	getmaxyx(stdscr,row,col);
+	mvprintw(row/2,(col-strlen(tekst))/2,"%s",tekst);
 
 
 	refresh();
-	sleep(51);//czeka tyle sekund na zakonczenie ncurses
+	sleep(10);//czeka tyle sekund na zakonczenie ncurses
 	endwin(); //ncurses- konczy tryb rysowania
 
 }
