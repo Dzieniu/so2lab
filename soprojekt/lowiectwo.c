@@ -11,7 +11,7 @@
 //wymiary pola rysowalnego
 #define windowX 60
 #define windowY 20
-#define pulapki 10
+#define pulapki 100
 #define iloscPionkow 5
 
 
@@ -120,7 +120,7 @@ void* ruchPionka(void* arg){
 	struct pionek* p = (struct pionek*)arg; //przekazany argument z watku,czyli pojedynczy pionek
 	while(true){
 		usleep(1000000);//czas ruchu pionka
-		int kierunek = 0; // kierunek ruchu, 0-gora, 1-prawo, 2-dol, 3-lewo
+		int kierunek = rand()%4; // kierunek ruchu, 0-gora, 1-prawo, 2-dol, 3-lewo
 		//koordynaty pionka przed ruchem
 
 		int x = p->x;
@@ -145,29 +145,60 @@ void* ruchPionka(void* arg){
 		  		p->y = y-1;
 				}
 			}
-				
-			
-
+		}else if(kierunek==1){
+			if (p->zablokowany!=true)//jak wolny to go, jak zablokowany to nothing happens
+			{
+				if(plansza[x+1][y].status == 2){ //if pulapka
+					p->zablokowany=true;
+					plansza[x+1][y].status = 3; // nowy status pola planszy - zablkoowany pionek
+					plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
+					//nowe koordynaty pionka
+					p->x = x+1;								
+		  		p->y = y;
+				}else{//if nie pulapka
+					plansza[x+1][y].status = 1; // nowy status pola planszy - pionek
+	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
+			  	p->x = x+1;								
+		  		p->y = y;
+				}
+			}
 		}
-		// else if(kierunek==1){
-		// 	plansza[x+1][y].status = 1; // nowy status pola planszy - pionek
-	 //  	plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
-	 //  	//nowe koordynaty pionka
-	 //  	p->x = x+1;								
-  // 		p->y = y;
-		// }else if(kierunek==2){
-		// 	plansza[x][y+1].status = 1; // nowy status pola planszy - pionek
-	 //  	plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
-	 //  	//nowe koordynaty pionka
-	 //  	p->x = x;								
-  // 		p->y = y+1;
-		// }else if(kierunek==3){
-		// 	plansza[x-1][y].status = 1; // nowy status pola planszy - pionek
-	 //  	plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
-	 //  	//nowe koordynaty pionka
-	 //  	p->x = x-1;								
-  // 		p->y = y;
-		// }
+			else if(kierunek==2){
+				if (p->zablokowany!=true)//jak wolny to go, jak zablokowany to nothing happens
+			{
+				if(plansza[x][y+1].status == 2){ //if pulapka
+					p->zablokowany=true;
+					plansza[x][y+1].status = 3; // nowy status pola planszy - zablkoowany pionek
+					plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
+					//nowe koordynaty pionka
+					p->x = x;								
+		  		p->y = y+1;
+				}else{//if nie pulapka
+					plansza[x][y+1].status = 1; // nowy status pola planszy - pionek
+	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
+			  	p->x = x;								
+		  		p->y = y+1;
+				}
+			}
+			}
+			else if(kierunek==3){
+				if (p->zablokowany!=true)//jak wolny to go, jak zablokowany to nothing happens
+			{
+				if(plansza[x-1][y].status == 2){ //if pulapka
+					p->zablokowany=true;
+					plansza[x-1][y].status = 3; // nowy status pola planszy - zablkoowany pionek
+					plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
+					//nowe koordynaty pionka
+					p->x = x-1;								
+		  		p->y = y;
+				}else{//if nie pulapka
+					plansza[x-1][y].status = 1; // nowy status pola planszy - pionek
+	  			plansza[x][y].status = 0;		// nowy status pola planszy - pustep pole
+			  	p->x = x-1;								
+		  		p->y = y;
+				}
+			}
+		}
 	}
 
 }
