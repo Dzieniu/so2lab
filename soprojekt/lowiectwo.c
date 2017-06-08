@@ -1,3 +1,6 @@
+//Pomysly czerpane z:
+//https://pl.wikibooks.org/wiki/POSIX_Threads/Podstawowe_operacje
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "pthread.h"
@@ -97,16 +100,33 @@ void tworzobraz(){
 	refresh();
 };
 
-bool koniec=false;
+// bool koniec=false;
 
 void* rysuj(void* arg){
-	while(!koniec){
+	while(true){
 		tworzobraz();
 	}
 };
 
 void* ruchPionka(void* arg){
-	
+	struct pionek* p = (struct pionek*)arg; //przekazany argument z watku,czyli pojedynczy pionek
+	while(true){
+		usleep(1000000);//czas ruchu pionka
+		int kierunek = 0; // kierunek ruchu, 0-gora, 1-prawo, 2-dol, 3-lewo
+		
+		//koordynaty pionka przed ruchem
+		int x = p->x;
+		int y = p->y;
+
+		//po ruchu nowe wartosc pola
+		plansza[x][y-1].status = 1;
+  	plansza[x][y].status = 0;
+
+  	//po ruchu nowe koordy pionka
+  	p->x = x;
+  	p->y = y-1;
+	}
+
 }
 
 
